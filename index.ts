@@ -1,6 +1,8 @@
 import * as express from "express";
 import * as path from "path";
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient()
 const app = express();
 const port = parseInt(process.env.PORT) || process.argv[3] || 3000;
 
