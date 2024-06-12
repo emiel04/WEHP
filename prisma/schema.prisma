@@ -11,8 +11,12 @@ datasource db {
 model User {
   id       Int        @id @default(autoincrement())
   name     String?    @unique
+  pincode  String?
   isWehp   Boolean    @default(false)
   Streepje Streepje[]
+  loginAttempts Int     @default(0)
+  lastAttempt DateTime?
+  timeout     DateTime?
 }
 
 model Streepje {

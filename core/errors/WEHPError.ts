@@ -1,11 +1,12 @@
 class WEHPError extends Error {
   statusCode: number;
   message: string;
-
-  constructor(statusCode, message) {
+  data: any;
+  constructor(statusCode, message, data = null) {
       super();
       this.statusCode = statusCode;
       this.message = message;
+      this.data = data;
   }
 }
 
@@ -27,5 +28,23 @@ class StateError extends WEHPError {
   }
 }
 
-export { WEHPError, UnexistingResourceError, BodyParsingError, StateError };
+class UnauthorizedError extends WEHPError {
+  constructor() {
+      super(401, "Unauthorized");
+  }
+}
+
+type TooManyAttemptsData = {
+  minutesLeft: number,
+  secondsLeft: number,
+  totalSeconds: number
+}
+
+class TimedOutError extends WEHPError {
+  constructor(message = "Too many attempts", data: TooManyAttemptsData = null) {
+      super(429, message, data);
+  }
+}
+
+export { WEHPError, UnexistingResourceError, BodyParsingError, StateError, UnauthorizedError, TimedOutError };
 
