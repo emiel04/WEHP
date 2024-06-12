@@ -9,9 +9,7 @@ const authMiddleware = async(req: Request, res: Response, next: NextFunction) =>
   if (!token) {
     next(new UnauthorizedError())
   }
-  try {
-    console.log();
-    
+  try {    
     const payload: CLAIMS = jwt.verify(token.split("Bearer ")[1], process.env.SECRET) as any
     const user= await prisma.user.findFirst({where: {name: payload.sub}})
     if(!user) next(new UnauthorizedError())
