@@ -8,6 +8,13 @@ export function toStreepjeDTO(model: Streepje): StreepjeDTO {
   return { id: model.id, reason: model.reason, userId: model.userId };
 }
 
+export const toCategoryDTO = (category: any): CategoryDTO => {
+  return {
+    id: category.id,
+    name: category.name,
+  };
+};
+
 export type UserDTO = {
   id: number,
   name: string,
@@ -19,3 +26,7 @@ export type StreepjeDTO = {
   reason: string,
   userId: number
 }
+export type CategoryDTO = {
+  id: number;
+  name: string;
+};

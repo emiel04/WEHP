@@ -1,7 +1,7 @@
 import { CLAIMS } from './../controllers/authcontroller';
 import { prisma } from './../../prisma';
 import { NextFunction, Request, Response } from "express";
-import { UnauthorizedError } from "../errors/WEHPError";
+import { ForbiddenError, UnauthorizedError } from "../errors/WEHPError";
 import * as jwt from 'jsonwebtoken'
 
 const authMiddleware = async(req: Request, res: Response, next: NextFunction) => {
@@ -20,4 +20,13 @@ const authMiddleware = async(req: Request, res: Response, next: NextFunction) =>
   }
 }
 
-export {authMiddleware}
+const wehpMiddleware = async(req: Request, res: Response, next: NextFunction) => {
+  const user = req.user;
+  if(!user.isWehp) {
+    next(new ForbiddenError())
+  }
+  next()
+}
+
+
+export {authMiddleware, wehpMiddleware}

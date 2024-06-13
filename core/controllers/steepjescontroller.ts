@@ -5,20 +5,32 @@ import { StreepjeDTO, toStreepjeDTO } from '../dtos/dto'; // Define StreepjeDTO 
 export type TStreepjeCreate = {
   reason: string;
   userId: number;
+  categoryId: number;
 }
 
 export type TStreepjeUpdate = {
   reason: string;
+  categoryId: number;
 }
 
 class StreepjeController {
   createStreepje = async (streepjeCreate: TStreepjeCreate): Promise<StreepjeDTO> => {
-      const { reason, userId } = streepjeCreate;
+      const { reason, userId, categoryId } = streepjeCreate;
 
       if (!userId) {
         throw new BodyParsingError('no userId provided');
       }  
   
+      if (!categoryId) {
+        throw new StateError('Category not found');
+      }
+  
+      if (categoryId) {
+        const category = await prisma.category.findUnique({ where: { id: categoryId } });
+        if (!category) {
+          throw new StateError('Category not found');
+        }
+      }
 
       // Check if user exists
       const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -31,6 +43,7 @@ class StreepjeController {
           data: {
               reason,
               userId,
+              categoryId,
           },
       });
 
@@ -67,12 +80,25 @@ class StreepjeController {
   }
 
   updateStreepje = async (streepjeId: number, streepjeUpdate: TStreepjeUpdate): Promise<StreepjeDTO> => {
-    const { reason } = streepjeUpdate;
+    const { reason, categoryId } = streepjeUpdate;
 
     const existingStreepje = await prisma.streepje.findUnique({ where: { id: streepjeId } });
     if (!existingStreepje) {
       throw new StateError('Streepje not found');
     }
+
+
+    if (!categoryId) {
+      throw new StateError('Category not found');
+    }
+
+    if (categoryId) {
+      const category = await prisma.category.findUnique({ where: { id: categoryId } });
+      if (!category) {
+        throw new StateError('Category not found');
+      }
+    }
+
 
     // Update Streepje
     

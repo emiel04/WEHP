@@ -34,6 +34,12 @@ class UnauthorizedError extends WEHPError {
   }
 }
 
+class ForbiddenError extends WEHPError {
+  constructor() {
+      super(403, "Forbidden");
+  }
+}
+
 type TooManyAttemptsData = {
   minutesLeft: number,
   secondsLeft: number,
@@ -46,5 +52,5 @@ class TimedOutError extends WEHPError {
   }
 }
 
-export { WEHPError, UnexistingResourceError, BodyParsingError, StateError, UnauthorizedError, TimedOutError };
+export { WEHPError, UnexistingResourceError, BodyParsingError, StateError, UnauthorizedError, TimedOutError, ForbiddenError };
 
