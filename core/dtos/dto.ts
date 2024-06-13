@@ -5,7 +5,7 @@ export function toUserDTO(model: User): UserDTO | null {
 }
 
 export function toStreepjeDTO(model: Streepje): StreepjeDTO {
-  return { id: model.id, reason: model.reason, userId: model.userId };
+  return { id: model.id, reason: model.reason, userId: model.userId, categoryId: model.categoryId };
 }
 
 export const toCategoryDTO = (category: any): CategoryDTO => {
@@ -24,7 +24,8 @@ export type UserDTO = {
 export type StreepjeDTO = {
   id: number,
   reason: string,
-  userId: number
+  userId: number,
+  categoryId: number | null
 }
 export type CategoryDTO = {
   id: number;

@@ -107,7 +107,7 @@ class AuthController {
             isWehp: user.isWehp
         } as CLAIMS, process.env.SECRET)
         
-        return token;
+        return {token};
     }
 }
 

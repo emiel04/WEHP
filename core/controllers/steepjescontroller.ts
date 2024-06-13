@@ -21,10 +21,6 @@ class StreepjeController {
         throw new BodyParsingError('no userId provided');
       }  
   
-      if (!categoryId) {
-        throw new StateError('Category not found');
-      }
-  
       if (categoryId) {
         const category = await prisma.category.findUnique({ where: { id: categoryId } });
         if (!category) {
@@ -43,15 +39,11 @@ class StreepjeController {
           data: {
               reason,
               userId,
-              categoryId,
+              categoryId: categoryId ?? null,
           },
       });
 
-      return {
-          id: createdStreepje.id,
-          reason: createdStreepje.reason,
-          userId: createdStreepje.userId,
-      };
+      return toStreepjeDTO(createdStreepje)
   }
 
   getStreepjesByUserId = async (userId: number): Promise<StreepjeDTO[]> => {
@@ -72,11 +64,7 @@ class StreepjeController {
           include: { user: true }, 
       });
 
-      return streepjes.map((streepje) => ({
-          id: streepje.id,
-          reason: streepje.reason,
-          userId: streepje.userId,
-      }));
+      return streepjes.map(toStreepjeDTO);
   }
 
   updateStreepje = async (streepjeId: number, streepjeUpdate: TStreepjeUpdate): Promise<StreepjeDTO> => {
@@ -87,10 +75,6 @@ class StreepjeController {
       throw new StateError('Streepje not found');
     }
 
-
-    if (!categoryId) {
-      throw new StateError('Category not found');
-    }
 
     if (categoryId) {
       const category = await prisma.category.findUnique({ where: { id: categoryId } });

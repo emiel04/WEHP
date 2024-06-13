@@ -146,6 +146,7 @@ wehpRouter.delete('/categories/:categoryId', async (req: express.Request, res, n
 
 app.use('/api/', publicRouter)
 app.use('/api/', authRouter)
+app.use('/api/', wehpRouter)
 
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);
