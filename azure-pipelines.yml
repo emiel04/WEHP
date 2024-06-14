@@ -17,5 +17,18 @@ steps:
 
 - script: |
     npm install
+    npx prisma generate
     npm run build
-  displayName: 'npm install and build'
+  displayName: 'npm install and build and prisma'
+  
+ 
+- task: CopyFiles@2
+  inputs:
+    Contents: 'dist/**'
+    TargetFolder:  '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'release'
+    publishLocation: 'Container'
