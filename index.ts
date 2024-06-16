@@ -9,6 +9,7 @@ import { streepjeController } from "./core/controllers/steepjescontroller";
 import 'dotenv/config'
 import { boolean } from 'boolean';
 import { categoryController } from './core/controllers/categorycontroller';
+import cors from 'cors';
 
 const app = express();
 const port = parseInt(process.env.PORT) || process.argv[3] || 3000;
@@ -20,15 +21,36 @@ const wehpRouter = express.Router()
 authRouter.use(authMiddleware)
 wehpRouter.use([authMiddleware, wehpMiddleware])
 
+app.use(cors())
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs');
 
+app.use('/api/', publicRouter)
+app.use('/api/', authRouter)
+app.use('/api/', wehpRouter)
 
-publicRouter.post('/', (req, res) => {
+publicRouter.get('/', (req, res) => {
   res.json({"msg": "Hello world"});
 });
+
+publicRouter.get('/usernames', (req, res, next) => { 
+  const isWehp = req.query.isWehp;
+
+  authController.getUsernames(isWehp)
+    .then(usernames => res.json(usernames))
+    .catch(err => next(err));
+});
+publicRouter.get('/users', (req, res, next) => { 
+  const isWehp = req.query.isWehp;
+
+  authController.getUsers(isWehp)
+    .then(users => res.json(users))
+    .catch(err => next(err));
+});
+
+
 
 publicRouter.post('/signup', (req, res, next) => {
 
@@ -37,7 +59,7 @@ publicRouter.post('/signup', (req, res, next) => {
   }
 
 
-  authController.createAccount(req.body)
+authController.createAccount(req.body)
   .then((createdUser) => res.json(createdUser))
   .catch((err) => next(err))
 });
@@ -144,9 +166,7 @@ wehpRouter.delete('/categories/:categoryId', async (req: express.Request, res, n
   }
 });
 
-app.use('/api/', publicRouter)
-app.use('/api/', authRouter)
-app.use('/api/', wehpRouter)
+
 
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);

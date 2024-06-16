@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from "express";
 import { toUserDTO } from '../dtos/dto';
 import { hash, compare } from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
+import { boolean } from 'boolean';
 export type TUserCreate = {
     name: string,
     pin: string
@@ -48,11 +49,11 @@ class AuthController {
     login = async (loginData: TUserLogin) => {
         const {pin, name} = loginData;
         
-        if (!pin) {
-            throw new StateError('pin is required')
-        }
         if (!name) {
-            throw new StateError('name is required')
+            throw new StateError('Name is required')
+        }
+        if (!pin) {
+            throw new StateError('Pin is required')
         }
      
         const user = await prisma.user.findFirst({where: {name}})
@@ -108,6 +109,28 @@ class AuthController {
         } as CLAIMS, process.env.SECRET)
         
         return {token};
+    }
+
+    getUsernames = async (isWehp) => {
+
+        const users = await prisma.user.findMany();
+
+        if(isWehp === null || isWehp === undefined) {
+            return users.map(u => u.name).sort().reverse();
+        }
+        
+        return users.filter(u => u.isWehp === boolean(isWehp)).map(u => u.name).sort().reverse();
+    }
+
+    getUsers = async (isWehp) => {
+
+        const users = await prisma.user.findMany();
+
+        if(isWehp === null || isWehp === undefined) {
+            return users.map(toUserDTO).sort().reverse()
+        }
+        
+        return users.filter(u => u.isWehp === boolean(isWehp)).map(toUserDTO).sort().reverse();
     }
 }
 

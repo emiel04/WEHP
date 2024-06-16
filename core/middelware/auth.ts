@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from "express";
 import { ForbiddenError, UnauthorizedError } from "../errors/WEHPError";
 import * as jwt from 'jsonwebtoken'
 
-const authMiddleware = async(req: Request, res: Response, next: NextFunction) => {
+const authMiddleware = async(req: Request, res: Response, next: NextFunction) => {  
   const token = req.headers.authorization;
   if (!token) {
     next(new UnauthorizedError())

@@ -22,17 +22,17 @@ async function main() {
           name: "Jules",
           pincode: await hash("55555", 10),
         }});
+
+
     await prisma.category.createMany({
       data: [
         {name: "Racisme"},
-        {name: "Familie"},
+        {name: "Cultuur"},
+        {name: "Tante"},
+        {name: "Mama"},
+        {name: "Nicht"},
+        {name: "Ander familielid"},
       ]
     })
 
-    await prisma.streepje.createMany({
-      data: [
-        { userId: 3, categoryId: 1, reason: "Noemde me zwart"},
-        { userId: 3, categoryId: 2, reason: "Was bezig over mijn tante"},
-            ]
-    })
 }
