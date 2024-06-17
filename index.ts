@@ -89,7 +89,11 @@ wehpRouter.post('/streepjes', async (req: express.Request, res, next) => {
 authRouter.get('/streepjes/:userId', async (req: express.Request, res, next) => {
   try {
     const userId = parseInt(req.params.userId, 10);
-    const streepjes = await streepjeController.getStreepjesByUserId(userId);
+    const full = boolean(req.query.full);
+
+    const streepjes = await streepjeController.getStreepjesByUserId(userId, full);
+
+
     res.json(streepjes);
   } catch (error) {
     next(error);

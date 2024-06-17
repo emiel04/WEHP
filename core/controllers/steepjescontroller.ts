@@ -1,6 +1,6 @@
 import { prisma } from '../../prisma'; // Import Prisma instance and models
 import { BodyParsingError, StateError } from '../errors/WEHPError';
-import { StreepjeDTO, toStreepjeDTO } from '../dtos/dto'; // Define StreepjeDTO as needed
+import { StreepjeDTO, toFullStreepjeDTO, toStreepjeDTO } from '../dtos/dto'; // Define StreepjeDTO as needed
 
 export type TStreepjeCreate = {
   reason: string;
@@ -46,7 +46,7 @@ class StreepjeController {
       return toStreepjeDTO(createdStreepje)
   }
 
-  getStreepjesByUserId = async (userId: number): Promise<StreepjeDTO[]> => {
+  getStreepjesByUserId = async (userId: number, full: boolean): Promise<StreepjeDTO[]> => {
 
 
     if (!userId) {
@@ -59,12 +59,19 @@ class StreepjeController {
           throw new StateError('User not found');
       }
 
+      if (!full) {
+        const streepjes = await prisma.streepje.findMany({
+          where: { userId }});
+        return streepjes.map(s => toStreepjeDTO(s));
+      }
+
+
       const streepjes = await prisma.streepje.findMany({
           where: { userId },
-          include: { user: true }, 
+          include: { category: true }, 
       });
 
-      return streepjes.map(toStreepjeDTO);
+      return streepjes.map(s => toFullStreepjeDTO(s));
   }
 
   updateStreepje = async (streepjeId: number, streepjeUpdate: TStreepjeUpdate): Promise<StreepjeDTO> => {
